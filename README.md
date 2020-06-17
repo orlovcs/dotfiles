@@ -32,8 +32,8 @@ wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regul
 
 
 # i3
-[1](screenshots/i3status.png)
-[1](screenshots/polybar.png)
+![1](screenshots/i3status.png)
+![1](screenshots/polybar.png)
 
 
 # Further Tweaks
