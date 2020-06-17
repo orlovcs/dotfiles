@@ -31,5 +31,10 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf
 
 
+# i3
+[1](screenshots/i3status.png)
+[1](screenshots/polybar.png)
+
+
 # Further Tweaks
 - https://github.com/AryToNeX/Glasscord/
