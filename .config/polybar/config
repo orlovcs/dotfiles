@@ -2,6 +2,8 @@
 
 [global/wm]
 
+
+
 [colors]
 ;My colors are set from .Xresources to match everything else
 my_background 	= ${xrdb:background}
@@ -60,13 +62,13 @@ override-redirect = true
 radius = 5
 
 enable-ipc = false
-
+21
 padding-left = 2
 padding-right = 2
 
-modules-left = i3 
+modules-left =  i3
 modules-center = 
-modules-right = menu0 cpu memory wlan wifi backlight filesystem battery volume date
+modules-right =  cpu memory wlan wifi backlight filesystem battery volume date
 
 separator = " \ "
 
@@ -86,6 +88,7 @@ font-1 = FontAwesome:size=10;3
 font-2 = IPAPgothic:weight=regular:size=10;3
 font-3 = FontAwesome 5 Free:size=10:style=Solid;3
 font-4 = unifont:size=10;3
+font-5 = Weather Icons:size=9;1
 
 tray-position = left
 tray-maxsize = 36
@@ -118,6 +121,11 @@ fixed-values = true
 label-mounted = %free%
 label-unmounted = n/a
 
+[module/weather]
+type = custom/script
+exec = busctl --user -j get-property io.ntfd /weather openweathermap.strings RenderedTemplate | jq -r .data
+datainterval = 60
+label-font = 6
 
 [module/i3]
 type = internal/i3
@@ -132,7 +140,7 @@ label-mode-background = ${colors.my_color4}
 label-focused = %name%
 label-focused-foreground = ${colors.my_foreground}
 label-focused-background = ${colors.my_background}
-label-focused-underline = ${colors.my_color4}
+label-focused-underline = ${colors.my_color7}
 label-focused-padding = 2
 
 label-unfocused = %name%
@@ -143,37 +151,59 @@ label-visible-underline = ${colors.my_foreground}
 label-visible-padding = 4
 
 label-urgent = %name%
-label-urgent-foreground = ${colors.my_foreground}
+label-urgent-foreground = ${colors.red
 label-urgent-background = ${colors.my_background}
-label-urgent-underline = ${colors.my_color8}
+label-urgent-underline = ${colors.red}
 label-urgent-padding = 2
 
 [module/mpd]
 type = internal/mpd
 
-host = gui
-port = 4200
+host = 127.0.0.1
+port = 6600
 
+;   <label-song> (default)
+;   <label-time>
+;   <bar-progress>
+;   <toggle> - gets replaced with <icon-(pause|play)>
+;   <toggle-stop> - gets replaced with <icon-(stop|play)>
+;   <icon-random>
+;   <icon-repeat>
+;   <icon-repeatone> (deprecated)
+;   <icon-single> - Toggle playing only a single song. Replaces <icon-repeatone>
+;   <icon-consume>
+;   <icon-prev>
+;   <icon-stop>
+;   <icon-play>
+;   <icon-pause>
+;   <icon-next>
+;   <icon-seekb>
+;   <icon-seekf>
 ;format-online = <label-song> <icon-prev> <icon-play> <icon-pause> <icon-next> 
-format-online = <label-song>
+format-online = <label-song> <label-time>
 format-offline = <label-offline>
 
-label-offline = mpd is offline
+label-offline =  
 ;label-offline-foreground = ${colors.bg}
 
-label-song = "%artist% - %title%"
+label-song = "%title%"
 label-song-maxlen = 120
 label-song-ellipsis = false
 ;label-song-background = ${colors.black}
 ;label-song-padding = 1
 
+; Only applies if <bar-progress> is used
+bar-progress-width = 45
+bar-progress-indicator = |
+bar-progress-fill = ─
+bar-progress-empty = ─
 
-;icon-prev = 
+icon-prev = 
 ;icon-seekb = <<
 ;icon-stop = o
-;icon-pause = %{T4}
-;icon-play = %{T4}
-;icon-next = %{T4}
+icon-pause = %{T4}
+icon-play = %{T4}
+icon-next = %{T4}
 ;icon-seekf = >>
 
 icon-random = S
@@ -284,11 +314,12 @@ type = internal/pulseaudio
 
 format-volume = VOL <label-volume>
 
+
 label-volume = %percentage%%
 label-volume-foreground = ${root.foreground}
 
 label-muted = muted
-label-muted-foreground = ${colors.foreground}
+label-muted-foreground = ${colors.white}
 
 bar-volume-width = 10
 bar-volume-foreground-0 = ${colors.green}
@@ -324,6 +355,8 @@ label-discharging = %percentage%% (%time%)
 format-discharging = <label-discharging>
 
 format-full =   <label-full>
+;format-full-underline = ${self.format-charging-underline}
+;format-full-overline = ${self.format-charging-underline}
 format-full-padding = 1
 
 ramp-capacity-0 = 

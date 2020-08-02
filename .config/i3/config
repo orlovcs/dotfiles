@@ -21,10 +21,10 @@ bindsym XF86KbdBrightnessDown exec ~/.config/i3/kbd.sh --down
 exec xrdb ~/.Xresources
 
 # Media player controls
-bindsym XF86AudioPlay exec playerctl play
-bindsym XF86AudioPause exec playerctl pause
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioPlay exec mpc play
+bindsym XF86AudioPause exec mpc pause
+bindsym XF86AudioNext exec mpc next
+bindsym XF86AudioPrev exec mpc previous
 
 # swap alt/super and revive ~
 exec xmodmap ~/.Xmodmap
@@ -286,8 +286,15 @@ client.placeholder	$foreground	$background	$foreground	$color8		$color8
 #Set Wallpaper
 exec nitrogen --restore
 
+#start weather service
+exec_always --no-startup-id ntfd
+
 #Turn on redshift
-exec redshift
+exec_always killall redshift
+
+#runs when manually restarting i3
+
+exec_always --no-startup-id redshift
 
 # Set shut down, restart and locking features
 bindsym $mod+0 mode "$mode_system"
@@ -306,12 +313,14 @@ mode "$mode_system" {
     bindsym Escape mode "default"
 }
 
+
 # Use this line or similar for autolocking using the blurlock utility
-exec --no-startup-id xss-lock --transfer-sleep-lock -- blurlock --nofork
+exec_always --no-startup-id xss-lock --transfer-sleep-lock -- blurlock --nofork
 
-exec xrdb ~/.Xresources
+exec_always xrdb ~/.Xresources
 
-exec_always --no-startup-id polybar -r Bar & 
+exec_always killall polybar
+exec_always  --no-startup-id polybar -r Bar & 
 
 # Autostart applications
 #exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
@@ -328,14 +337,12 @@ exec_always --no-startup-id polybar -r Bar &
 #exec_always --no-startup-id fix_xcursor
 
 
-
-
 #############################
 ### settings for i3-gaps: ###
 #############################
 
 # Set inner/outer gaps
-gaps inner 12
+gaps inner 14
 gaps outer 10
 
 gaps top 18
