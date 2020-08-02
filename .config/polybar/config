@@ -2,8 +2,6 @@
 
 [global/wm]
 
-
-
 [colors]
 ;My colors are set from .Xresources to match everything else
 my_background 	= ${xrdb:background}
@@ -286,12 +284,11 @@ type = internal/pulseaudio
 
 format-volume = VOL <label-volume>
 
-
 label-volume = %percentage%%
 label-volume-foreground = ${root.foreground}
 
 label-muted = muted
-label-muted-foreground = ${colors.my_color0}
+label-muted-foreground = ${colors.foreground}
 
 bar-volume-width = 10
 bar-volume-foreground-0 = ${colors.green}
@@ -319,7 +316,6 @@ full-at = 98
 time-format = %H:%M
 
 format-charging = <animation-charging> <label-charging>
-format-charging-underline = ${colors.green}
 format-charging-padding = 1
 
 bar-capacity-width = 10
@@ -328,8 +324,6 @@ label-discharging = %percentage%% (%time%)
 format-discharging = <label-discharging>
 
 format-full =   <label-full>
-format-full-underline = ${self.format-charging-underline}
-format-full-overline = ${self.format-charging-underline}
 format-full-padding = 1
 
 ramp-capacity-0 = 
