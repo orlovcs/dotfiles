@@ -1,0 +1,1 @@
+loglevel=3 debug intel_idle.max_cstate=1 video=SVIDEO-1:d i915.enable_execlists=0
