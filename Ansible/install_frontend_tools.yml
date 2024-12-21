@@ -1,0 +1,138 @@
+---
+- name: Install frontend dev tools
+  hosts: all
+  become: yes  # Run tasks as root
+
+  tasks:
+    # Install curl (Debian-based)
+    - name: Install curl (Debian-based)
+      apt:
+        name: curl
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"  # For Debian-based systems
+
+    # Install curl (macOS)
+    - name: Install curl (macOS)
+      homebrew:
+        name: curl
+        state: present
+      when: ansible_os_family == "Darwin"  # For macOS systems
+
+    # Install Node.js (Debian-based)
+    - name: Install Node.js (Debian-based)
+      apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    # Install Node.js (macOS)
+    - name: Install Node.js (macOS)
+      homebrew:
+        name: node
+        state: present
+      when: ansible_os_family == "Darwin"
+
+    # Install npm (Debian-based)
+    - name: Install npm (Debian-based)
+      apt:
+        name: npm
+        state: present
+      when: ansible_os_family == "Debian"
+
+    # Install npm (macOS)
+    - name: Install npm (macOS)
+      homebrew:
+        name: npm
+        state: present
+      when: ansible_os_family == "Darwin"
+
+    # Remove Yarn if it's already installed
+    - name: Remove Yarn if already installed
+      package:
+        name: yarn
+        state: absent
+
+    - name: Add Yarn's GPG key
+      shell: |
+        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+      when: ansible_os_family == "Debian"
+
+    - name: Add Yarn's repository
+      shell: |
+        echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+      when: ansible_os_family == "Debian"
+
+    - name: Update apt and install Yarn
+      apt:
+        name: yarn
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    # Install Yarn (Debian-based) using the official Yarn repository
+    - name: Install Yarn (Debian-based)
+      apt:
+        name: yarn
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    # Install Yarn (macOS)
+    - name: Install Yarn (macOS)
+      homebrew:
+        name: yarn
+        state: present
+      when: ansible_os_family == "Darwin"
+
+    # Install build-essential (Debian-based) for compiling native add-ons
+    - name: Install build-essential (Debian-based) for compiling native add-ons
+      apt:
+        name: build-essential
+        state: present
+      when: ansible_os_family == "Debian"
+
+    # Install Xcode Command Line Tools (macOS) for compiling
+    - name: Install Xcode Command Line Tools (macOS) for compiling
+      command: xcode-select --install
+      when: ansible_os_family == "Darwin"
+
+    # Verify Node.js version
+    - name: Verify Node.js version
+      command: node -v
+      register: node_version
+      failed_when: node_version.rc != 0  # Fail if node version command fails
+      ignore_errors: yes  # Don't stop playbook if this fails
+
+    # Verify npm version
+    - name: Verify npm version
+      command: npm -v
+      register: npm_version
+      failed_when: npm_version.rc != 0  # Fail if npm version command fails
+      ignore_errors: yes  # Don't stop playbook if this fails
+
+    # Verify Yarn version
+    - name: Verify Yarn version
+      command: yarn -v
+      register: yarn_version
+      failed_when: yarn_version.rc != 0  # Fail if yarn version command fails
+      ignore_errors: yes  # Don't stop playbook if this fails
+
+    # Output Node.js version
+    - name: Output Node.js version
+      debug:
+        msg: "Node.js version: {{ node_version.stdout }}"
+      when: node_version.rc == 0  # Only output if the command was successful
+
+    # Output npm version
+    - name: Output npm version
+      debug:
+        msg: "npm version: {{ npm_version.stdout }}"
+      when: npm_version.rc == 0  # Only output if the command was successful
+
+    # Output Yarn version
+    - name: Output Yarn version
+      debug:
+        msg: "Yarn version: {{ yarn_version.stdout }}"
+      when: yarn_version.rc == 0  # Only output if the command was successful
