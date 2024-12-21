@@ -1,40 +1,43 @@
 # dotfiles
 
+## Ansible Command
 
-# Terminal
-0. sudo apt-get install zsh
+```sh
+    ansible-playbook -vv -i inventory.yml install_shell.yml 
+```
 
-1. Install oh my zsh:
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+## Terminal Setup
 
-# replace our ~/.zshrc with the one included in the templates.
-cp ~/.oh-my-zsh/templates/zshrc.zsh-template 
-~/.zshrcsource ~/.zshrc
+1. Install Zsh:
+    ```sh
+    sudo apt-get install zsh
+    ```
 
-2. Install powerline
+2. Install Oh My Zsh:
+    ```sh
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    ```
 
-3. powerline
-git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+3. Replace your [.zshrc](http://_vscodecontentref_/1) with the template included in Oh My Zsh:
+    ```sh
+    cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+    source ~/.zshrc
+    ```
 
-install menlo powerline modded for vs code
-git clone https://github.com/abertsch/Menlo-for-Powerline.git
-cd Menlo-for-Powerline
-cp "Menlo for Powerline.ttf" ~/.fonts
-fc-cache -vf ~/.fonts
+4. Install Powerline:
+    ```sh
+    git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+    ```
 
-auto suggestions
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+5. Install Menlo Powerline font for VS Code:
+    ```sh
+    git clone https://github.com/abertsch/Menlo-for-Powerline.git
+    cd Menlo-for-Powerline
+    cp "Menlo for Powerline.ttf" ~/.fonts
+    fc-cache -vf ~/.fonts
+    ```
 
-
-
-# Download the fonts using wget
-wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf
-
-
-# i3
-![1](screenshots/i3status.png)
-![1](screenshots/polybar.png)
-
-
-# Further Tweaks
-- https://github.com/AryToNeX/Glasscord/
+6. Install Zsh Autosuggestions:
+    ```sh
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    ```

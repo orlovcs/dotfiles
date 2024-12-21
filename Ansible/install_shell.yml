@@ -1,0 +1,169 @@
+---
+- name: Install Zsh and configure it for the user
+  hosts: all
+  become: no  # Run tasks as root
+  tasks:
+    # Install Zsh for Debian-based systems
+    - name: Install Zsh (Debian-based)
+      apt:
+        name: zsh
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+      become: yes
+
+
+    # Install Zsh for macOS
+    - name: Install Zsh (macOS)
+      homebrew:
+        name: zsh
+        state: present
+      when: ansible_os_family == "Darwin"
+
+    # Set Zsh as the default shell for the user
+    - name: Set Zsh as the default shell
+      command: chsh -s /usr/bin/zsh "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+      become: yes
+
+    # Remove Oh My Zsh if it exists before installing
+    - name: Remove existing Oh My Zsh
+      file:
+        path: "/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh"
+        state: absent
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    # Install Oh My Zsh if it doesn't already exist
+    - name: Install Oh My Zsh
+      shell: |
+        curl -Lo install.sh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+        RUNZSH=no sh install.sh
+      args:
+        chdir: "/home/{{ ansible_facts['user_id'] }}"
+        creates: "/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh"  # Check if this directory exists
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    # Create initial .zshrc file to bypass the 'zsh-newuser-install' prompt
+    - name: Create .zshrc to bypass zsh-newuser-install
+      copy:
+        dest: "/home/{{ ansible_facts['user_id'] }}/.zshrc"
+        content: |
+
+          # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+          # Initialization code that may require console input (password prompts, [y/n]
+          # confirmations, etc.) must go above this block; everything else may go below.
+          if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+            source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+          fi
+
+          # ~/.zshrc for hum
+          export ZSH="$HOME/.oh-my-zsh"
+          ZSH_THEME="powerlevel10k/powerlevel10k"
+          source $ZSH/oh-my-zsh.sh
+          plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+          DISABLE_UPDATE_PROMPT=true
+
+          # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+          [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+          POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+        owner: "{{ ansible_facts['user_id'] }}"
+        group: "{{ ansible_facts['user_id'] }}"
+        mode: '0644'
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    # Set up Powerlevel10k theme
+    - name: Install Powerlevel10k theme
+      git:
+        repo: https://github.com/romkatv/powerlevel10k.git
+        dest: "/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh/custom/themes/powerlevel10k"
+        version: master
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    - name: Configure Powerlevel10k as the default theme
+      lineinfile:
+        path: "/home/{{ ansible_facts['user_id'] }}/.zshrc"
+        regexp: '^ZSH_THEME=.*$'
+        line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    # Disable Oh My Zsh auto-update
+    - name: Disable Oh My Zsh auto-update
+      lineinfile:
+        path: "/home/{{ ansible_facts['user_id'] }}/.zshrc"
+        line: 'DISABLE_UPDATE_PROMPT=true'
+        create: yes
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    # Install Zsh plugins if they don't already exist
+    - name: Install Zsh plugins
+      shell: |
+        git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+      args:
+        chdir: "/home/{{ ansible_facts['user_id'] }}"
+        creates: "/home/{{ ansible_facts['user_id'] }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"  # Check if plugin exists
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    # Add plugins to .zshrc
+    - name: Configure Zsh plugins in .zshrc
+      lineinfile:
+        path: "/home/{{ ansible_facts['user_id'] }}/.zshrc"
+        regexp: '^plugins=\(.*\)$'
+        line: 'plugins=(git zsh-autosuggestions zsh-syntax-highlighting)'
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
+
+    - name: Override powerline fonts package name for Debian.
+      ansible.builtin.set_fact:
+        powerlinefonts: fonts-powerline
+      when: ansible_os_family == 'Debian'
+    
+    - name: Override fd-find package name for Archlinux.
+      ansible.builtin.set_fact:
+        fdfind: fd
+      when: ansible_os_family == 'Archlinux'
+    
+    - name: Install Powerline fonts
+      become: true
+      ansible.builtin.package:
+        state: present
+        name: "{{ powerlinefonts }}"
+    
+    - name: Install zsh-autosuggestions plugin # noqa: latest
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions
+        dest: ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+        depth: 1
+    
+    - name: Install zsh-completions plugin # noqa: latest
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-completions
+        dest: ~/.oh-my-zsh/custom/plugins/zsh-completions
+        depth: 1
+    
+    - name: Install zsh-syntax-highlighting plugin # noqa: latest
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+        depth: 1
+    
+    - name: Change user shell to zsh 
+      become: true
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        shell: /bin/zsh
+
+    - name: Copy .p10k.zsh to user's home directory
+      copy:
+        src: .p10k.zsh
+        dest: /home/{{ ansible_facts['user_id'] }}/.p10k.zsh
+      become_user: "{{ ansible_facts['user_id'] }}"
+      when: ansible_facts['user_id'] != 'root'
