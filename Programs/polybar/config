@@ -1,0 +1,415 @@
+;:set syn=dosini
+
+[global/wm]
+
+
+
+[colors]
+;My colors are set from .Xresources to match everything else
+my_background 	= ${xrdb:background}
+my_foreground 	= ${xrdb:foreground}
+my_color0	= ${xrdb:color0}
+my_color1	= ${xrdb:color1}
+my_color2	= ${xrdb:color2}
+my_color3	= ${xrdb:color3}
+my_color4	= ${xrdb:color4}
+my_color5	= ${xrdb:color5}
+my_color6	= ${xrdb:color6}
+my_color7	= ${xrdb:color7}
+my_color8	= ${xrdb:color8}
+my_color9	= ${xrdb:color9}
+my_color10	= ${xrdb:color10}
+my_color11	= ${xrdb:color11}
+my_color12	= ${xrdb:color12}
+my_color13	= ${xrdb:color13}
+my_color14	= ${xrdb:color14}
+my_color15	= ${xrdb:color15}
+
+gray = #00000000
+white = #FFFFFF
+black = #000000
+
+red = #e53935
+pink = #d81b60
+purple = #8e24aa
+deep-purple = #5e35b1
+indigo = #3949ab
+blue = #1e88e5
+light-blue = #039be5
+cyan = #00acc1
+teal = #00897b
+green = #43a047
+light-green = #7cb342
+lime = #c0ca33
+yellow = #fdd835
+amber = #ffb300
+orange = #fb8c00
+deep-orange = #f4511e
+brown = #6d4c41
+grey = #757575
+blue-gray = #546e7a
+
+[bar/Bar]
+bottom = false
+wm-restack = i3
+dpi = 192
+
+fixed-center = false
+
+width = 96.45%
+height = 48
+override-redirect = true
+radius = 10
+
+
+enable-ipc = true
+
+padding = 1
+offset-x = 1.9%
+offset-y = 6
+
+modules-left =  i3
+modules-center = 
+modules-right =  cpu memory wlan wifi backlight filesystem battery volume date
+
+
+separator = " \ "
+
+
+background = ${colors.my_background}
+foreground =  ${colors.my_foreground}
+
+line-size = 2.5
+line-color = ${colors.my_color4}
+
+border-size = 0
+border-color = ${colors.my_color2}
+
+
+font-0 = FontAwesome:size=10;3
+font-1 = micro:weight=regular:size=9;3
+font-2 = IPAPgothic:weight=regular:size=10;3
+font-3 = FontAwesome 5 Free:size=10:style=Solid;3
+font-4 = unifont:size=10;3
+font-5 = Weather Icons:size=9;1
+
+tray-position = right
+tray-maxsize = 36
+tray-detached = false
+tray-background = ${colors.my_background}
+tray-padding = 5
+
+;CURRENT WINDOW
+[module/xwindow]
+type = internal/xwindow
+label = %title%
+label-maxlen = 30
+
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+mount-0 = /
+fixed-values = true
+
+; Available tokens:
+;   %mountpoint%
+;   %type%
+;   %fsname%
+;   %percentage_free%
+;   %percentage_used%
+;   %total%
+;   %free%
+;   %used%
+; Default: %mountpoint% %percentage_free%%
+label-mounted = %free%
+label-unmounted = n/a
+
+[module/weather]
+type = custom/script
+exec = busctl --user -j get-property io.ntfd /weather openweathermap.strings RenderedTemplate | jq -r .data
+datainterval = 60
+label-font = 6
+
+[module/i3]
+type = internal/i3
+
+label-unfocused-background = ${colors.my_background}
+label-unfocused-foreground = ${colors.my_foreground}
+
+label-mode = %mode%
+label-mode-padding = 2
+label-mode-background = ${colors.my_color4}
+
+label-focused = %name%
+label-focused-foreground = ${colors.my_foreground}
+label-focused-background = ${colors.my_background}
+label-focused-underline = ${colors.my_color7}
+label-focused-padding = 2
+
+label-unfocused = %name%
+label-unfocused-padding = 2
+
+label-visible = %name%
+label-visible-underline = ${colors.my_foreground}
+label-visible-padding = 4
+
+label-urgent = %name%
+label-urgent-foreground = ${colors.red
+label-urgent-background = ${colors.my_background}
+label-urgent-underline = ${colors.red}
+label-urgent-padding = 2
+
+[module/mpd]
+type = internal/mpd
+
+host = 127.0.0.1
+port = 6600
+
+;   <label-song> (default)
+;   <label-time>
+;   <bar-progress>
+;   <toggle> - gets replaced with <icon-(pause|play)>
+;   <toggle-stop> - gets replaced with <icon-(stop|play)>
+;   <icon-random>
+;   <icon-repeat>
+;   <icon-repeatone> (deprecated)
+;   <icon-single> - Toggle playing only a single song. Replaces <icon-repeatone>
+;   <icon-consume>
+;   <icon-prev>
+;   <icon-stop>
+;   <icon-play>
+;   <icon-pause>
+;   <icon-next>
+;   <icon-seekb>
+;   <icon-seekf>
+;format-online = <label-song> <icon-prev> <icon-play> <icon-pause> <icon-next> 
+format-online = <label-song> <label-time>
+format-offline = <label-offline>
+
+label-offline =  
+;label-offline-foreground = ${colors.bg}
+
+label-song = "%title%"
+label-song-maxlen = 120
+label-song-ellipsis = false
+;label-song-background = ${colors.black}
+;label-song-padding = 1
+
+; Only applies if <bar-progress> is used
+bar-progress-width = 45
+bar-progress-indicator = |
+bar-progress-fill = ─
+bar-progress-empty = ─
+
+icon-prev = 
+;icon-seekb = <<
+;icon-stop = o
+icon-pause = %{T4}
+icon-play = %{T4}
+icon-next = %{T4}
+;icon-seekf = >>
+
+icon-random = S
+icon-repeat = R
+
+toggle-on-foreground = #e60053
+toggle-off-foreground = #66
+
+
+[module/backlight]
+type = internal/xbacklight
+format = <label> 
+label = X %percentage%%
+
+
+[module/cpu]
+format-label = internal/cpu
+
+format = <label>
+
+ramp-coreload-0 = ▁
+ramp-coreload-1 = ▂
+ramp-coreload-2 = ▃
+ramp-coreload-3 = ▄
+ramp-coreload-4 = ▅
+ramp-coreload-5 = ▆
+ramp-coreload-6 = ▇
+ramp-coreload-7 = █
+ramp-coreload-underline = ${colors.fg}
+
+type = internal/cpu
+interval = 2
+label = "CPU %percentage%%"
+
+;label-underline = ${colors.modfg}
+;label-background = ${colors.bg}
+;label-overline = ${colors.white}
+
+
+[module/memory]
+type = internal/memory
+interval = 2
+label = "MEM %percentage_used%%"
+
+[module/wifi]
+type = custom/script
+exec = iw dev wlp3s0 link | grep signal | cut -d " " -f 2-
+tail = true
+
+[module/wlan]
+type = internal/network
+interface = wlp3s0
+interval = 3.0
+
+format-connected = <label-connected>
+format-disconnected = <label-disconnected>
+format-packetloss = <animation-packetloss> <label-connected>
+
+; All labels support the following tokens:
+;   %ifname%    [wireless+wired]
+;   %local_ip%  [wireless+wired]
+;   %local_ip6% [wireless+wired]
+;   %essid%     [wireless]
+;   %signal%    [wireless]
+;   %upspeed%   [wireless+wired]
+;   %downspeed% [wireless+wired]
+;   %linkspeed% [wired]
+
+; Default: %ifname% %local_ip%
+label-connected = %essid%
+label-disconnected = not connected
+label-disconnected-foreground = #66ffffff
+
+; Only applies if <animation-packetloss> is used
+animation-packetloss-0 = ⚠
+animation-packetloss-0-foreground = #ffa64c
+animation-packetloss-1 = 📶
+animation-packetloss-1-foreground = #000000
+; Framerate in milliseconds
+animation-packetloss-framerate = 500
+
+
+[module/eth]
+type = internal/network
+interface = enp2s0
+interval = 3.0
+
+format-connected-padding = 1
+format-disconnected-padding = 1
+
+format-connected-underline = ${colors.white}
+format-disconnected-underline = ${colors.gray}
+
+label-connected =  
+label-disconnected = 
+label-disconnected-foreground = ${colors.gray}
+
+
+[module/date]
+type = internal/date
+date = %H:%M 
+date-alt = %a %m-%d-%y %l:%M:%S %p
+interval = 5
+
+
+[module/volume]
+type = internal/pulseaudio
+
+format-volume = VOL <label-volume>
+
+
+label-volume = %percentage%%
+label-volume-foreground = ${root.foreground}
+
+label-muted = muted
+label-muted-foreground = ${colors.white}
+
+bar-volume-width = 10
+bar-volume-foreground-0 = ${colors.green}
+bar-volume-foreground-1 = ${colors.green}
+bar-volume-foreground-2 = ${colors.green}
+bar-volume-foreground-3 = ${colors.green}
+bar-volume-foreground-4 = ${colors.yellow}
+bar-volume-foreground-5 = ${colors.red}
+bar-volume-gradient = false
+bar-volume-indicator = 
+bar-volume-indicator-font = 4
+bar-volume-indicator-foreground = ${colors.white}
+bar-volume-fill = 
+bar-volume-fill-font = 4
+bar-volume-empty = 
+bar-volume-empty-font = 4
+bar-volume-empty-foreground = ${colors.gray}
+
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+full-at = 98
+time-format = %H:%M
+
+format-charging = <animation-charging> <label-charging>
+format-charging-padding = 1
+
+bar-capacity-width = 10
+
+label-discharging = %percentage%% (%time%)
+format-discharging = <label-discharging>
+
+format-full =   <label-full>
+;format-full-underline = ${self.format-charging-underline}
+;format-full-overline = ${self.format-charging-underline}
+format-full-padding = 1
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-foreground = ${colors.white}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-foreground = ${colors.white}
+animation-charging-framerate = 500
+
+
+[module/temperature]
+type = internal/temperature
+; thermal-zone = 0
+warn-temperature = 65
+
+format = <label> 
+format-warn = <label-warn>
+
+label = TEMP %temperature%
+label-warn = TEMP %temperature%!!!
+
+
+[module/menu0]
+type = custom/menu
+
+format = <label-toggle> <menu>
+;format-underline = ${colors.white}
+format-padding = 1
+;format-margin = 1
+
+;format-background = ${colors.black}
+
+menu-0-0 = " shutdown "
+menu-0-0-exec = shutdown now
+menu-0-1 = " restart "
+menu-0-1-exec = shutdown -r now
+menu-0-2 = "suspend "
+menu-0-2-exec = systemctl suspend
+menu-0-3 =   cancel
+
+
+label-open = PWR
+label-close =
+
+
+; vim:ft=dosini
