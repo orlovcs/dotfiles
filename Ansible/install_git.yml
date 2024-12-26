@@ -1,0 +1,17 @@
+- name: Install and configure Git dynamically
+  hosts: localhost
+  become: yes
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+      update_cache: yes
+
+    - name: Set Git global username
+      command: git config --global user.name "{{ git_user_name }}"
+
+    - name: Set Git global email
+      command: git config --global user.email "{{ git_user_email }}"
