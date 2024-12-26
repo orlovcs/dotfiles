@@ -14,6 +14,7 @@
           - htop
         state: present
         update_cache: yes
+      become: yes
       when: ansible_os_family == "Debian"
 
     # Install utilities for macOS
