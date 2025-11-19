@@ -1,30 +1,53 @@
-
 # ~/.config/tmuxinator/fullstack.yml
 
 name: fullstack
-root: $REPO_DIR
+root: "$REPO_DIR"
+
+before_script:
+  - export REPO_DIR="$HOME/Homebase1"
+  - export FRONTEND_DIR="$REPO_DIR/client"
+  - export FRONTEND_LINT_DIR="$FRONTEND_DIR/src"
+  - export BACKEND_LINTER_DIR="$REPO_DIR"
+  - cd "$REPO_DIR"
 
 windows:
-  - editor:
-      layout: main-vertical
-      panes:
-        - vim
-        - guard
-  - server:
-      panes:
-        - bundle exec rails s
-  - logs:
-      panes:
-        - tail -f log/development.log
+  - backend-server:
+     root: "$REPO_DIR"
+     panes:
+        - cd $REPO_DIR && bundle install && bin/rails db:migrate && rails s
+
   - frontend:
+      root: "$FRONTEND_DIR"
+      layout: tiled
       panes:
-        - yarn dev
+        - cd "$FRONTEND_DIR" && yarn && yarn dev
+
+  - jest:
+      root: "$FRONTEND_DIR"
+      panes:
+        - cd "$FRONTEND_DIR" && yarn test
+
+  - frontend-linter:
+      root: "$FRONTEND_DIR"
+      panes:
+        - cd "$FRONTEND_DIR" && yarn eslint "$FRONTEND_LINT_DIR" --fix
+
+  - backend-linter:
+      root: "$BACKEND_LINTER_DIR"
+      panes:
+        - cd $REPO_DIR && bundle exec rubocop "$BACKEND_LINTER_DIR" -a
+
   - sidekiq:
       panes:
-        - bundle exec sidekiq
-  - rspec:
+        - cd $REPO_DIR && bundle exec sidekiq
+
+  - logs:
       panes:
-        - bundle exec rspec
-  - jest:
+        - cd $REPO_DIR && tail -f log/development.log
+        - cd $REPO_DIR && tail -f log/sidekiq.log
+
+  - git:
       panes:
-        - yarn test
+        - cd $REPO_DIR && git status
+
+
